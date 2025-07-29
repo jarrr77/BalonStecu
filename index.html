@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>🎈 Balon Stecu 🎈</title>
+  <style>
+    :root {
+      --primary: #0099ff;
+      --accent: #fff5cc;
+      --danger: #ff3d3d;
+      --success: #45d17a;
+      --bg: #e9f8ff;
+      --card: #fff;
+      --shadow: 0 4px 18px rgba(0,0,0,0.07);
+      --radius: 18px;
+    }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--bg);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      margin: 32px 0 10px;
+      font-size: 2.5em;
+      letter-spacing: 2px;
+      color: var(--primary);
+      text-shadow: 1px 2px 8px #b9e7ff;
+      font-weight: 900;
+    }
+    h2 {
+      margin: 28px 0 14px;
+      color: var(--primary);
+      font-weight: 700;
+      text-align: center;
+    }
+    #home-settings, #form-nama, #game, #leaderboard {
+      width: 100%;
+      max-width: 370px;
+      box-sizing: border-box;
+    }
+    #home-settings {
+      margin-top: 10px;
+      text-align: right;
+    }
+    #home-settings button {
+      border: none;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 1.4em;
+      width: 46px;
+      height: 46px;
+      box-shadow: var(--shadow);
+      transition: background 0.18s;
+    }
+    #home-settings button:hover {
+      background: #0074c9;
+    }
+    #level-info {
+      margin-top: 10px;
+      font-size: 1em;
+      background: var(--accent);
+      color: #3b3b25;
+      border-radius: var(--radius);
+      padding: 12px 15px;
+      box-shadow: var(--shadow);
+      text-align: left;
+      transition: 0.25s;
+    }
+    #form-nama {
+      margin: 30px 0 20px;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      gap: 10px;
+    }
+    #form-nama input {
+      padding: 12px 15px;
+      font-size: 1.1em;
+      border-radius: var(--radius);
+      border: 1.5px solid var(--primary);
+      outline: none;
+      flex: 1;
+      min-width: 0;
+      box-shadow: var(--shadow);
+      background: #fff;
+      transition: border 0.2s;
+    }
+    #form-nama input:focus {
+      border-color: #0074c9;
+    }
+    #form-nama button {
+      background: var(--success);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      padding: 12px 22px;
+      font-weight: bold;
+      box-shadow: var(--shadow);
+      font-size: 1.1em;
+      transition: background 0.15s;
+    }
+    #form-nama button:hover {
+      background: #34bb66;
+    }
+    #game {
+      margin: 0 auto 18px;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px 0 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    #game-container {
+      position: relative;
+      width: 100%;
+      max-width: 360px;
+      height: 320px;
+      background: linear-gradient(180deg, #f3faff 50%, #d0f0ff 100%);
+      border-radius: var(--radius);
+      border: 2px solid var(--primary);
+      margin: 4px auto 15px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      touch-action: manipulation;
+    }
+    .balon {
+      position: absolute;
+      width: 42px;
+      height: 62px;
+      border-radius: 50% 50% 45% 45%;
+      box-shadow: 0 5px 20px #b3e8ff77;
+      border: 2px solid #e6e6e6;
+      cursor: pointer;
+      transition: transform 0.12s, filter 0.2s;
+      z-index: 2;
+    }
+    .balon:active {
+      transform: scale(0.91);
+      filter: brightness(0.88);
+    }
+    .balon.boom {
+      background: repeating-linear-gradient(
+        45deg, #ff3d3d, #ff3d3d 8px, #212 8px, #212 16px
+      );
+      border-color: #fff;
+      box-shadow: 0 0 18px 3px #ff9595aa;
+    }
+    .balon.good {
+      background: linear-gradient(135deg, #f7c873 70%, #fff2c7 100%);
+      border-color: #ad7300;
+    }
+    .balon.primary {
+      background: linear-gradient(135deg, #49caff 80%, #e9f6ff 100%);
+      border-color: #127ebd;
+    }
+    .balon.lucky {
+      background: linear-gradient(135deg, #45d17a 80%, #eafff2 100%);
+      border-color: #266e38;
+    }
+    #score, #level, #timer, #highscore {
+      font-size: 1.13em;
+      margin: 4px 0;
+      letter-spacing: 1px;
+      font-weight: 500;
+    }
+    #highscore {
+      color: #e18c00;
+    }
+    #highscorer {
+      color: #3b3b25;
+      font-weight: bold;
+    }
+    #leaderboard {
+      width: 100%;
+      max-width: 370px;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px 28px 12px 40px;
+      margin: 0 auto 28px;
+      font-size: 1.07em;
+      box-sizing: border-box;
+      min-height: 48px;
+    }
+    #leaderboard li {
+      margin: 0 0 3px 0;
+      font-weight: 500;
+      color: #222;
+      letter-spacing: 0.5px;
+    }
+    #leaderboard li:first-child {
+      color: var(--primary);
+      font-weight: 700;
+    }
+    /* Tombol control di game */
+    #game-controls {
+      display: flex;
+      gap: 12px;
+      margin: 10px 0 0 0;
+    }
+    #game-controls button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1em;
+      padding: 10px 16px;
+      font-weight: bold;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: background 0.18s;
+    }
+    #game-controls button:hover {
+      background: #0074c9;
+    }
+    @media (max-width: 480px) {
+      h1 { font-size: 2em; }
+      #form-nama, #home-settings, #leaderboard, #game { max-width: 96vw; }
+      #game-container { max-width: 97vw; min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <h1>🎈 Balon Stecu 🎈</h1>
+  <div id="home-settings">
+    <button title="Info Level" onclick="toggleLevelInfo()">⚙️</button>
+    <div id="level-info" style="display:none;">
+      <b>Level:</b> Mulai dari 1.<br>
+      Semakin tinggi level, balon muncul lebih cepat & banyak.<br>
+      Awas, ada balon <span style="color:var(--danger);font-weight:bold;">Boom</span> tersembunyi!
+    </div>
+  </div>
+  <div id="form-nama">
+    <input type="text" id="playerName" placeholder="Masukkan Nama Kamu">
+    <button onclick="mulaiGame()">Mulai</button>
+  </div>
+  <div id="game" style="display: none;">
+    <div id="game-container"></div>
+    <div id="score">Skor: 0</div>
+    <div id="level">Level: 1</div>
+    <div id="timer">Waktu: 00:00</div>
+    <div id="highscore">High Score: 0 (oleh <span id="highscorer">-</span>)</div>
+    <div id="game-controls">
+      <button onclick="restartGame()">⟳ Restart</button>
+      <button onclick="backToHome()">⏮ Home</button>
+    </div>
+  </div>
+  <h2>🏆 Leaderboard</h2>
+  <ol id="leaderboard"></ol>
+  <audio id="bgm-gameover" src="game-over.mp3" preload="auto"></audio>
+  <audio id="sound-boom" src="klik-balon.mp3" preload="auto"></audio>
+  <script>
+    // Toggle setting info
+    function toggleLevelInfo() {
+      const info = document.getElementById('level-info');
+      info.style.display = info.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // Game logic
+    let playerName = '';
+    let score = 0, level = 1, timer = 0, interval = null, gameOver = false;
+    let highscore = localStorage.getItem('balonstecu_highscore') || 0;
+    let highscorer = localStorage.getItem('balonstecu_highscorer') || '-';
+    let leaderboard = JSON.parse(localStorage.getItem('balonstecu_leaderboard') || '[]');
+
+    // Short util
+    function pad2(n) { return n < 10 ? '0'+n : n; }
+
+    // Show leaderboard
+    function showLeaderboard() {
+      leaderboard.sort((a,b) => b.score - a.score);
+      let html = '';
+      leaderboard.slice(0,10).forEach((e, i) => {
+        html += `<li>${e.name} <b>${e.score}</b></li>`;
+      });
+      document.getElementById('leaderboard').innerHTML = html || '<li>Belum ada skor</li>';
+    }
+
+    // Update game state UI
+    function updateStats() {
+      document.getElementById('score').textContent = 'Skor: ' + score;
+      document.getElementById('level').textContent = 'Level: ' + level;
+      document.getElementById('timer').textContent = 'Waktu: ' + pad2(Math.floor(timer/60)) + ':' + pad2(timer%60);
+      document.getElementById('highscore').innerHTML =
+        `High Score: ${highscore} (oleh <span id="highscorer">${highscorer}</span>)`;
+    }
+
+    // Start game
+    function mulaiGame() {
+      playerName = document.getElementById('playerName').value.trim() || 'Guest';
+      score = 0; level = 1; timer = 0; gameOver = false;
+      document.getElementById('form-nama').style.display = 'none';
+      document.getElementById('game').style.display = 'flex';
+      updateStats();
+      document.getElementById('game-container').innerHTML = '';
+      clearInterval(interval);
+      runTimer();
+      spawnBalon();
+    }
+
+    // Restart game (nama tetap sama)
+    function restartGame() {
+      score = 0; level = 1; timer = 0; gameOver = false;
+      document.getElementById('game-container').innerHTML = '';
+      updateStats();
+      clearInterval(interval);
+      runTimer();
+      spawnBalon();
+    }
+
+    // Back to home
+    function backToHome() {
+      clearInterval(interval);
+      document.getElementById('form-nama').style.display = '';
+      document.getElementById('game').style.display = 'none';
+      document.getElementById('playerName').value = '';
+      gameOver = true;
+    }
+
+    // End game
+    function endGame() {
+      gameOver = true;
+      clearInterval(interval);
+      document.getElementById('bgm-gameover').play();
+      setTimeout(() => {
+        alert('Permainan Selesai!\nSkor: ' + score);
+        // Save leaderboard
+        leaderboard.push({name: playerName, score});
+        localStorage.setItem('balonstecu_leaderboard', JSON.stringify(leaderboard));
+        // Highscore
+        if (score > highscore) {
+          highscore = score;
+          highscorer = playerName;
+          localStorage.setItem('balonstecu_highscore', highscore);
+          localStorage.setItem('balonstecu_highscorer', playerName);
+        }
+        showLeaderboard();
+        document.getElementById('form-nama').style.display = '';
+        document.getElementById('game').style.display = 'none';
+        document.getElementById('playerName').value = '';
+      }, 400);
+    }
+
+    // Timer logic
+    function runTimer() {
+      interval = setInterval(() => {
+        if (gameOver) return;
+        timer++;
+        updateStats();
+      }, 1000);
+    }
+
+    // Spawn balloons
+    function spawnBalon() {
+      if (gameOver) return;
+      let container = document.getElementById('game-container');
+      let balonCount = Math.min(3 + Math.floor(level/2), 8);
+      // Remove existing after click/timeout
+      container.innerHTML = '';
+      for(let i=0; i<balonCount; i++) {
+        let balon = document.createElement('div');
+        // Type balon: boom, good, primary, lucky
+        let r = Math.random();
+        let tipe = r < 0.13 ? 'boom' : (r < 0.35 ? 'good' : (r < 0.6 ? 'lucky' : 'primary'));
+        balon.className = 'balon ' + tipe;
+        balon.title = tipe === 'boom' ? 'Boom! Game Over' : 'Pecahkan!';
+        balon.style.left = Math.random() * 85 + '%';
+        balon.style.top = Math.random() * 70 + '%';
+        balon.onclick = function(){
+          if (gameOver) return;
+          if (tipe === 'boom') {
+            document.getElementById('sound-boom').play();
+            balon.style.filter = 'brightness(0.3)';
+            endGame();
+          } else {
+            score += tipe === 'good' ? 4 : tipe === 'lucky' ? 2 : 1;
+            balon.style.transform = 'scale(0.7)';
+            balon.style.opacity = 0;
+            setTimeout(()=>spawnBalon(), 200);
+            // Level up
+            if (score > 0 && score % 10 === 0) {
+              level++;
+            }
+            updateStats();
+          }
+        };
+        container.appendChild(balon);
+      }
+      // Auto next spawn or game over after timeout
+      setTimeout(()=>{
+        if (!gameOver) spawnBalon();
+      }, Math.max(1100 - level*75, 370));
+    }
+
+    // Initial UI
+    document.getElementById('playerName').addEventListener('keydown', function(e){
+      if (e.key === 'Enter') mulaiGame();
+    });
+    showLeaderboard();
+    updateStats();
+  </script>
+</body>
+</html>
